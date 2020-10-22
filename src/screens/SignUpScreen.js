@@ -31,7 +31,6 @@ const SignupScreen =(props)=> {
                 leftIcon={<MaterialIcons name="vpn-key" size={24} color="black"/>}
                 placeholder="Password" 
                 secureTextEntry={true} />
-                
                 <Button
                 icon={<Feather name="user" size={25} color="white" />}
                 titleStyle={{paddingLeft:10}}

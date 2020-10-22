@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -6,6 +5,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from './src/screens/HomeScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import SignupScreen from './src/screens/SignupScreen';
+import {AuthProvider,AuthContext} from './src/providers/AuthProvider';
+
 
 const Authstack = createStackNavigator();
 const Homestack= createStackNavigator();
@@ -25,9 +26,15 @@ const AuthScreenStack=()=> {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <AuthScreenStack/>
-    </NavigationContainer>
+    <AuthProvider>
+      <AuthContext.Consumer>
+        {(auth)=>(
+          <NavigationContainer>
+            {auth.isLogged?<HomeScreenStack/>:<AuthScreenStack/>}
+          </NavigationContainer>)}
+      </AuthContext.Consumer>
+    </AuthProvider>
+    
   );
 }
 
