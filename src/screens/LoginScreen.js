@@ -4,8 +4,12 @@ import { ImageBackground,StyleSheet, Text, View } from 'react-native';
 import { Card,Input, Button } from 'react-native-elements';
 import { AntDesign,MaterialIcons  } from '@expo/vector-icons';
 import {AuthContext} from './../providers/AuthProvider';
+import {getDataJSON} from './../functions/AsyncStorageFunctions';
+
 
 const LoginScreen =(props)=> {
+    let [email,setEmail]=useState("");
+    let [password,setPassword]=useState("");
     return(
         <AuthContext.Consumer>
             {(auth)=>
@@ -25,18 +29,32 @@ const LoginScreen =(props)=> {
                     <Card.Divider />
                     <Input
                     leftIcon={<MaterialIcons name="mail-outline" size={24} color="black"/>}
-                    placeholder="E-mail Address"/>
+                    placeholder="E-mail Address"
+                    onChangeText={function (input) {
+                    setEmail(input);
+                }}/>
                     <Input 
                     leftIcon={<MaterialIcons name="vpn-key" size={24} color="black"/>}
                     placeholder="Password" 
-                    secureTextEntry={true} />
+                    secureTextEntry={true} 
+                    onChangeText={function (input) {
+                    setPassword(input);
+                }}/>
                     <Button
                     icon={<AntDesign name="login" size={24} color="white" />}
                     titleStyle={{paddingLeft:10}}
                     title="Log In!"
                     type="solid"
-                    onPress={()=>{
-                        auth.setisLogged(true);
+                    onPress={async ()=>{
+                        let user= await getDataJSON(email);
+                        if(user.password==password)
+                        {
+                            auth.setisLogged(true);
+                            auth.setcurrentUser(user);
+                        }
+                        else
+                            alert("Login credentials Invalid");
+                        
                     }}
                     />
                     <Button
@@ -55,7 +73,7 @@ const LoginScreen =(props)=> {
 }
 
 const styles=StyleSheet.create({
-        container:{
+    container:{
         flex:1,
         justifyContent: "center",
         
