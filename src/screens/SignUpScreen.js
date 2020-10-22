@@ -3,8 +3,25 @@ import { StatusBar } from 'expo-status-bar';
 import { ImageBackground,StyleSheet, Text, View } from 'react-native';
 import { Card,Input, Button } from 'react-native-elements';
 import { AntDesign,Ionicons,MaterialIcons,Feather  } from '@expo/vector-icons';
+import {storeDataJSON} from './../functions/AsyncStorageFunctions';
+
+
+// function validateEmail (email) {
+// let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+//   if (reg.test(email) === false){
+//       return true;
+//   }
+//   else {
+//       return false;
+//   }
+// }
 
 const SignupScreen =(props)=> {
+    let [name,setName]=useState("");
+    let [studentID,setStudentID]=useState("");
+    let [email,setEmail]=useState("");
+    let [password,setPassword]=useState("");
+
     return(
         <View style={styles.container}>
             <StatusBar
@@ -20,22 +37,47 @@ const SignupScreen =(props)=> {
                 <Card.Divider />
                 <Input 
                 leftIcon={<Ionicons name="ios-person" size={24} color="black" />}
-                placeholder="Username" />
-                <Input 
+                placeholder="Username" onChangeText={function (input) {
+                    setName(input);
+                }}/>
+                <Input
+                keyboardType = 'numeric' 
                 leftIcon={<Ionicons name="md-school" size={24} color="black" />}
-                placeholder="StudentID" />
+                placeholder="StudentID" onChangeText={function (input) {
+                    setStudentID(input);
+                }}/>
                 <Input
                 leftIcon={<MaterialIcons name="mail-outline" size={24} color="black"/>}
-                placeholder="E-mail Address"/>
+                placeholder="E-mail Address"
+                errorStyle={{ color: 'red' }}
+                onChangeText={function (input) {
+                    setEmail(input);
+                }}
+                
+                />
                 <Input 
                 leftIcon={<MaterialIcons name="vpn-key" size={24} color="black"/>}
                 placeholder="Password" 
-                secureTextEntry={true} />
+                secureTextEntry={true} onChangeText={function (input) {
+                    setPassword(input);
+                }}/>
                 <Button
                 icon={<Feather name="user" size={25} color="white" />}
                 titleStyle={{paddingLeft:10}}
                 title="Sign up!"
                 type="solid"
+                onPress={
+                    function () {
+                        let user={
+                            name:name,
+                            email:email,
+                            id:studentID,
+                            password:password,
+                        }
+                        storeDataJSON(email,user);
+                        props.navigation.navigate("Log In");
+                    }
+                }
                 />
                 <Button
                 type="clear"
