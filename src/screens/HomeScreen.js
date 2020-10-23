@@ -5,30 +5,30 @@ import { Header} from 'react-native-elements';
 import {AuthContext} from './../providers/AuthProvider';
 import { Ionicons ,Entypo} from '@expo/vector-icons';
 import { Card, Button ,Input} from 'react-native-elements'
+import moment from 'moment';
+import { storeDataJSON,getAllPost, getDataJSON, getAllKeys} from '../functions/AsyncStorageFunctions';
 
-
-
-const [post, setPost] = useState([]);
-const [user, setUser] = useState([]);
 
 function ShowCurrentDate() {
 
-      var date = new Date().getDate();
-      var month = new Date().getMonth() + 1;
-      var year = new Date().getFullYear();
+      var date = new moment().format('DD MMM YYYY');
 
-      return (date + '-' + month + '-' + year);
+      return date;
 }
 
 const PostWrite=({user})=>{
+    const [post, setPost] = useState("");
+    const [likecount,setLikeCount]=useState(0);
+    const input = React.createRef();
     return(
     <Card containerStyle={{borderRadius:10,shadowColor:'blue', shadowOffset:10}}>
         <Input
+        ref={input}
         placeholder='Write about the unknows'
         multiline={true}
         leftIcon={<Entypo name="pencil" size={24} color="black" />}
         onChangeText={(text)=>{
-            setPost(text);
+            setPost(text); 
         }}
         />
         <View style={{flexDirection:'row-reverse'}}>
@@ -37,12 +37,24 @@ const PostWrite=({user})=>{
                     let newPost={
                         post:post,
                         user:user.name,
-                        date: ShowCurrentDate()
+                        date: ShowCurrentDate(),
+                        likecount:likecount,
                     }
-                    storeDataJSON(email,newPost);
+                    id=Math.floor((Math.random() * 100000) + 1);
+                    console.log(newPost);
+                    storeDataJSON("post"+id,newPost);
                 }
             }/>
-            <Button disabled={true} type='clear' title='Clear' buttonStyle={{width:100,alignSelf:'flex-end'}}/>
+            <Button 
+            disabled={post.length==0? true:false} 
+            type='clear' title='Clear' 
+            buttonStyle={{width:120,alignSelf:'flex-end'}}
+            onPress={()=>{
+                setPost("");
+                input.current.clear();
+            }}/>
+
+
         </View>
         
     </Card>
@@ -59,7 +71,6 @@ const  HomeScreen =({navigation})=> {
         <AuthContext.Consumer>
             {(auth)=>
             (
-                
                 <View >
                     <StatusBar style="light"/>
                     <Header
@@ -76,8 +87,14 @@ const  HomeScreen =({navigation})=> {
                         auth.setcurrentUser({});
                     }}/>}
                     />
-                    <Text style={styles.TextStyle}>Hello from {auth.currentUser.email}</Text>
+                    {/* <Text style={styles.TextStyle}>Hello from {auth.currentUser.email}</Text> */}
                     <PostWrite user={auth.currentUser}/>
+                    {/* <Button title="view" onPress={
+                        async ()=>{
+                            let keys=await getAllPost();
+                            
+                        }
+                    }></Button> */}
                     
                 </View>
                 

@@ -19,6 +19,29 @@ const storeDataJSON = async (key, value) => {
   }
 };
 
+const getAllKeys = async()=>{
+  let keys = []
+  try {
+    keys =await AsyncStorage.getAllKeys();
+    return keys;
+  } catch(e) {
+     console.log(e)
+  }
+  
+}
+
+const getAllPost= async()=>{
+  let keys = await getAllKeys();
+  let posts=[];
+  keys.forEach(async (key)=>{
+            if (key.startsWith('post')) {
+                posts.push(await getDataJSON(key));
+                return posts;
+            }
+        }
+    );
+}
+
 const getData = async (key) => {
   try {
     let data = await AsyncStorage.getItem(key);
@@ -31,6 +54,7 @@ const getData = async (key) => {
     alert(error);
   }
 };
+
 const getDataJSON = async (key) => {
   try {
     let data = await AsyncStorage.getItem(key);
@@ -54,4 +78,4 @@ const removeData = async (key) => {
   }
 };
 
-export { storeData, storeDataJSON, getData, getDataJSON, removeData };
+export { getAllKeys,getAllPost,storeData, storeDataJSON, getData, getDataJSON, removeData };
