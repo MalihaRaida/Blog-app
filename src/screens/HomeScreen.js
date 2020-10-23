@@ -10,9 +10,7 @@ import { storeDataJSON,getAllPost, getDataJSON, getAllKeys} from '../functions/A
 
 
 function ShowCurrentDate() {
-
       var date = new moment().format('DD MMM YYYY');
-
       return date;
 }
 
@@ -43,6 +41,8 @@ const PostWrite=({user})=>{
                     id=Math.floor((Math.random() * 100000) + 1);
                     console.log(newPost);
                     storeDataJSON("post"+id,newPost);
+                    setPost("");
+                    input.current.clear();
                 }
             }/>
             <Button 
@@ -87,14 +87,8 @@ const  HomeScreen =({navigation})=> {
                         auth.setcurrentUser({});
                     }}/>}
                     />
-                    {/* <Text style={styles.TextStyle}>Hello from {auth.currentUser.email}</Text> */}
                     <PostWrite user={auth.currentUser}/>
-                    {/* <Button title="view" onPress={
-                        async ()=>{
-                            let keys=await getAllPost();
-                            
-                        }
-                    }></Button> */}
+                    
                     
                 </View>
                 
