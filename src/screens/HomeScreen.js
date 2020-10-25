@@ -6,7 +6,7 @@ import {AuthContext} from './../providers/AuthProvider';
 import { Ionicons } from '@expo/vector-icons';
 import PostWrite from './../components/PostWrite';
 import ShowPost from './../components/PostShow';
-import { useIsFocused } from '@react-navigation/native';
+
 
 
 import {  getDataJSON, getAllKeys} from '../functions/AsyncStorageFunctions';

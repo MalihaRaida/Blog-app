@@ -9,6 +9,7 @@ const storeData = async (key, value) => {
   }
 };
 
+
 const storeDataJSON = async (key, value) => {
   try {
     const jsonValue = JSON.stringify(value);
@@ -46,20 +47,7 @@ const getAllData = () =>{
   });
 }
 
-// const getAllPost= async()=>{
-//   let keys = await getAllKeys();
-//   let posts=[];
-
-//   keys.forEach(async (key)=>{
-//             if (key.startsWith('post')==true) {
-//               posts.push(await getDataJSON(key))
-//               console.log( posts);
-//             }
-//         }
-//     );
   
-  
-// }
 
 const getData = async (key) => {
   try {
@@ -91,10 +79,12 @@ const getDataJSON = async (key) => {
 const removeData = async (key) => {
   try {
     await AsyncStorage.removeItem(key);
-    alert("Data Removed Successfully");
+    return true;
   } catch (error) {
     alert(error);
   }
 };
+
+
 
 export { clear,getAllData,getAllKeys,storeData, storeDataJSON, getData, getDataJSON, removeData };
