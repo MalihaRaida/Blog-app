@@ -11,6 +11,7 @@ import SignupScreen from './src/screens/SignupScreen';
 import {AuthProvider,AuthContext} from './src/providers/AuthProvider';
 import NotificationScreen from './src/screens/NotificationScreen';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import ProfileScreen from './src/screens/ProfieScreen';
 
 
 const Authstack = createStackNavigator();
@@ -21,6 +22,7 @@ const DrawerScreens=()=>{
   return(
     <Drawer.Navigator initialRouteName="Home">
         <Drawer.Screen name="Home" component={HomeScreenTab} />
+        <Drawer.Screen name="Profile" component={ProfileScreen}/>
         {/* <Drawer.Screen name="Notifications" component={NotificationScreen}/> */}
   </Drawer.Navigator>
   ); 
