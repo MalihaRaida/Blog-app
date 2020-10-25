@@ -26,6 +26,7 @@ const  HomeScreen =({navigation})=> {
                 if (key.startsWith('post')) {
                     let post=await getDataJSON(key);
                     Allposts.push(post);
+                    console.log(post)
                 }
             }
             setPosts(Allposts);
@@ -69,10 +70,7 @@ const  HomeScreen =({navigation})=> {
                         renderItem={function ({ item }) {
                             return (
                             <ShowPost
-                                writer={item.user}
-                                date={item.date}
-                                post={item.post}
-                                likes={item.likecount}
+                                content={item}
                             />
                             );
                         }}
