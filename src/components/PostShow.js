@@ -5,10 +5,12 @@ import {Avatar} from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 import {StyleSheet,Text} from 'react-native';
 
-import {  mergeData,getDataJSON} from '../functions/AsyncStorageFunctions';
+import {  mergeData} from '../functions/AsyncStorageFunctions';
+
+import { AddLikeNotification } from "../functions/NotificationFunction";
 
 
-const ShowPost=({content})=>{
+const ShowPost=({content,currentuser})=>{
     const [like,setLike]=useState(content.likecount);
     return(<Card style={{flex: 0}}>
             <CardItem>
@@ -32,12 +34,18 @@ const ShowPost=({content})=>{
             <CardItem>
                 <Left>
                     <Button transparent icon onPress={async ()=>{
+                        await mergeData(content.id,JSON.stringify({likecount:like+1}));
+                        let likedjson={
+                          postid:content.id,
+	                        receiver:content.user_email,
+	                        sender:currentuser.name
+                        };
+                        await AddLikeNotification(likedjson)
                         setLike(like+1)
-                        await mergeData(content.id,JSON.stringify({likecount:like}));  
                     }}>
                     <Ionicons name="md-heart-empty" size={40} color="pink" />
                     </Button>
-                    <Text>{content.likecount==0?0:like-1}</Text>
+                    <Text>{like}</Text>
                 </Left>
                 <Right>
                   <Button style={{backgroundColor:'#3D6DCC', width:100,paddingLeft:15}}>

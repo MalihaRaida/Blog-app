@@ -76,7 +76,7 @@ const getDataJSON = async (key) => {
       const jsonData = JSON.parse(data);
       return jsonData;
     } else {
-      alert("No data with this key!");
+      return null;
     }
   } catch (error) {
     alert(error);

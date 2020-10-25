@@ -26,7 +26,6 @@ const  HomeScreen =({navigation})=> {
                 if (key.startsWith('post')) {
                     let post=await getDataJSON(key);
                     Allposts.push(post);
-                    console.log(post)
                 }
             }
             setPosts(Allposts);
@@ -71,6 +70,7 @@ const  HomeScreen =({navigation})=> {
                             return (
                             <ShowPost
                                 content={item}
+                                currentuser={auth.currentUser}
                             />
                             );
                         }}
