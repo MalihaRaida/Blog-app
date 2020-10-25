@@ -1,4 +1,4 @@
-import React,{useState,useEffect, Component} from 'react';
+import React,{useState,useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {StyleSheet ,View,FlatList ,Button} from 'react-native';
 import { Header} from 'react-native-elements';
