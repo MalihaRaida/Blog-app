@@ -1,77 +1,50 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect, Component} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import {StyleSheet, Text, View } from 'react-native';
+import {StyleSheet ,View,FlatList ,Button} from 'react-native';
 import { Header} from 'react-native-elements';
 import {AuthContext} from './../providers/AuthProvider';
-import { Ionicons ,Entypo} from '@expo/vector-icons';
-import { Card, Button ,Input} from 'react-native-elements'
-import moment from 'moment';
-import { storeDataJSON,getAllPost, getDataJSON, getAllKeys} from '../functions/AsyncStorageFunctions';
+import { Ionicons } from '@expo/vector-icons';
+import PostWrite from './../components/PostWrite';
+import ShowPost from './../components/PostShow';
+import { useIsFocused } from '@react-navigation/native';
 
 
-function ShowCurrentDate() {
-      var date = new moment().format('DD MMM YYYY');
-      return date;
-}
-
-const PostWrite=({user})=>{
-    const [post, setPost] = useState("");
-    const [likecount,setLikeCount]=useState(0);
-    const input = React.createRef();
-    return(
-    <Card containerStyle={{borderRadius:10,shadowColor:'blue', shadowOffset:10}}>
-        <Input
-        ref={input}
-        placeholder='Write about the unknows'
-        multiline={true}
-        leftIcon={<Entypo name="pencil" size={24} color="black" />}
-        onChangeText={(text)=>{
-            setPost(text); 
-        }}
-        />
-        <View style={{flexDirection:'row-reverse'}}>
-            <Button title='Post' buttonStyle={{width:100,alignSelf:'flex-start'}} onPress={
-                ()=>{
-                    let newPost={
-                        post:post,
-                        user:user.name,
-                        date: ShowCurrentDate(),
-                        likecount:likecount,
-                    }
-                    id=Math.floor((Math.random() * 100000) + 1);
-                    console.log(newPost);
-                    storeDataJSON("post"+id,newPost);
-                    setPost("");
-                    input.current.clear();
-                }
-            }/>
-            <Button 
-            disabled={post.length==0? true:false} 
-            type='clear' title='Clear' 
-            buttonStyle={{width:120,alignSelf:'flex-end'}}
-            onPress={()=>{
-                setPost("");
-                input.current.clear();
-            }}/>
-
-
-        </View>
-        
-    </Card>
-    );
-    
-};
-
-
+import {  getDataJSON, getAllKeys} from '../functions/AsyncStorageFunctions';
 
 
 const  HomeScreen =({navigation})=> {
+    const [posts,setPosts]=useState([]);
+    //const [newAdded,setNewAdded]=useState(null);
+    const [relaod,setReload]=useState(false)
+
+    const getPosts = async ()=>{
+        setReload(true)
+        let keys=await getAllKeys();
+        let Allposts=[];
+        if(keys!=null ){
+            for (let key of keys) {
+                if (key.startsWith('post')) {
+                    let post=await getDataJSON(key);
+                    Allposts.push(post);
+                }
+            }
+            setPosts(Allposts);
+        }
+        else
+            console.log("no keys");
+        setReload(false);
+    }
+
+    useEffect(()=>{
+        getPosts();
+    },[]);
     
+
     return(
         <AuthContext.Consumer>
             {(auth)=>
             (
-                <View >
+                <View style={styles.container}>
                     <StatusBar style="light"/>
                     <Header
                     containerStyle={{
@@ -87,9 +60,25 @@ const  HomeScreen =({navigation})=> {
                         auth.setcurrentUser({});
                     }}/>}
                     />
-                    <PostWrite user={auth.currentUser}/>
                     
-                    
+                        <PostWrite user={auth.currentUser} />
+                        <FlatList
+                        data={posts}
+                        onRefresh={getPosts}
+                        refreshing={relaod}
+                        renderItem={function ({ item }) {
+                            return (
+                            <ShowPost
+                                writer={item.user}
+                                date={item.date}
+                                post={item.post}
+                                likes={item.likecount}
+                            />
+                            );
+                        }}
+                        keyExtractor={(item, index) => index.toString()}
+                        
+                        />
                 </View>
                 
             )}

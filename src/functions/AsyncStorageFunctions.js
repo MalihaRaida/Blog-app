@@ -22,7 +22,7 @@ const storeDataJSON = async (key, value) => {
 const getAllKeys = async()=>{
   let keys = []
   try {
-    keys =await AsyncStorage.getAllKeys();
+    keys = await AsyncStorage.getAllKeys();
     return keys;
   } catch(e) {
      console.log(e)
@@ -30,17 +30,36 @@ const getAllKeys = async()=>{
   
 }
 
-const getAllPost= async()=>{
-  let keys = await getAllKeys();
-  let posts=[];
-  keys.forEach(async (key)=>{
-            if (key.startsWith('post')) {
-                posts.push(await getDataJSON(key));
-                return posts;
-            }
-        }
-    );
+const clear =async()=>{
+  AsyncStorage.clear();
+};
+
+
+const getAllData = () =>{
+  AsyncStorage.getAllKeys().then((keys) => {
+    return AsyncStorage.multiGet(keys)
+      .then((result) => {
+        // console.log(result);
+      }).catch((e) =>{
+        console.log(e);
+      });
+  });
 }
+
+// const getAllPost= async()=>{
+//   let keys = await getAllKeys();
+//   let posts=[];
+
+//   keys.forEach(async (key)=>{
+//             if (key.startsWith('post')==true) {
+//               posts.push(await getDataJSON(key))
+//               console.log( posts);
+//             }
+//         }
+//     );
+  
+  
+// }
 
 const getData = async (key) => {
   try {
@@ -78,4 +97,4 @@ const removeData = async (key) => {
   }
 };
 
-export { getAllKeys,getAllPost,storeData, storeDataJSON, getData, getDataJSON, removeData };
+export { clear,getAllData,getAllKeys,storeData, storeDataJSON, getData, getDataJSON, removeData };
