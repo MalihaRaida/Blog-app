@@ -9,12 +9,11 @@ import ShowPost from './../components/PostShow';
 
 
 
-import {  getDataJSON, getAllKeys} from '../functions/AsyncStorageFunctions';
+import { getDataJSON, getAllKeys} from '../functions/AsyncStorageFunctions';
 
 
 const  HomeScreen =({navigation})=> {
     const [posts,setPosts]=useState([]);
-    //const [newAdded,setNewAdded]=useState(null);
     const [relaod,setReload]=useState(false)
 
     const getPosts = async ()=>{
@@ -53,7 +52,7 @@ const  HomeScreen =({navigation})=> {
                     leftComponent={<Ionicons name="md-menu" size={25} color="white" onPress={()=>{
                         navigation.openDrawer();
                     }}/>}
-                    centerComponent={{ text: 'Home', style: { color: '#fff' } }}
+                    centerComponent={{ text: 'Home', style: { fontSize:20,color: '#fff' } }}
                     rightComponent={<Ionicons name="md-lock" size={25} color="white" 
                     onPress={()=>{
                         auth.setisLogged(false);
@@ -75,7 +74,6 @@ const  HomeScreen =({navigation})=> {
                             );
                         }}
                         keyExtractor={(item, index) => index.toString()}
-                        
                         />
                 </View>
                 

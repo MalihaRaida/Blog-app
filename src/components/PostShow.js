@@ -3,11 +3,11 @@ import React,{useState} from 'react';
 import {Card, Button,CardItem, Left, Body, Right} from 'native-base';
 import {Avatar} from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
-import {StyleSheet,Text} from 'react-native';
+import {Text} from 'react-native';
 
-import {  mergeData} from '../functions/AsyncStorageFunctions';
+import {mergeData} from '../functions/AsyncStorageFunctions';
 
-import { AddLikeNotification } from "../functions/NotificationFunction";
+import  AddNotification  from "../functions/NotificationFunction";
 
 
 const ShowPost=({content,currentuser})=>{
@@ -37,10 +37,11 @@ const ShowPost=({content,currentuser})=>{
                         await mergeData(content.id,JSON.stringify({likecount:like+1}));
                         let likedjson={
                           postid:content.id,
+                          comment:"",
 	                        receiver:content.user_email,
 	                        sender:currentuser.name
                         };
-                        await AddLikeNotification(likedjson)
+                        let p=await AddNotification(likedjson);
                         setLike(like+1)
                     }}>
                     <Ionicons name="md-heart-empty" size={40} color="pink" />

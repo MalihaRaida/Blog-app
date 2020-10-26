@@ -8,6 +8,7 @@ import { FontAwesome,Ionicons } from '@expo/vector-icons';
 import HomeScreen from './src/screens/HomeScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import SignupScreen from './src/screens/SignupScreen';
+import SinglePostScreen from './src/screens/SinglePostScreen';
 import {AuthProvider,AuthContext} from './src/providers/AuthProvider';
 import NotificationScreen from './src/screens/NotificationScreen';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
@@ -15,15 +16,15 @@ import ProfileScreen from './src/screens/ProfieScreen';
 
 
 const Authstack = createStackNavigator();
+const Notificationstack = createStackNavigator();
 const HomeTab= createMaterialBottomTabNavigator();
 const Drawer=createDrawerNavigator();
 
 const DrawerScreens=()=>{
   return(
     <Drawer.Navigator initialRouteName="Home">
-        <Drawer.Screen name="Home" component={HomeScreenTab} />
+        <Drawer.Screen name="Home" component={NotificationScreenStack} />
         <Drawer.Screen name="Profile" component={ProfileScreen}/>
-        {/* <Drawer.Screen name="Notifications" component={NotificationScreen}/> */}
   </Drawer.Navigator>
   ); 
 }
@@ -54,6 +55,15 @@ const HomeScreenTab=()=> {
           ),
         }} />
     </HomeTab.Navigator>);
+};
+
+
+const NotificationScreenStack=()=>{
+  return(<Notificationstack.Navigator >
+    <Notificationstack.Screen name="Home" component={HomeScreenTab} options={{ headerShown: false }}/>
+    <Notificationstack.Screen name="Post" component={SinglePostScreen} options={{ headerShown: false }}/>
+  </Notificationstack.Navigator>)
+
 };
 
 const AuthScreenStack=()=> {
