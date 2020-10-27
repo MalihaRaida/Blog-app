@@ -70,6 +70,7 @@ const  HomeScreen =({navigation})=> {
                             <ShowPost
                                 content={item}
                                 currentuser={auth.currentUser}
+                                navigation={navigation}
                             />
                             );
                         }}

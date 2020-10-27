@@ -19,16 +19,16 @@ const ProfileScreen =({navigation})=>{
             {(auth)=>
             (
             <View style={styles.container}>
-                <StatusBar style="dark"/>
+                <StatusBar style="light"/>
                 <Header
                     containerStyle={{
-                    backgroundColor: '#FFE98A',
+                    backgroundColor: '#14274e',
                     justifyContent: 'space-around',}}
-                    leftComponent={<Ionicons name="md-menu" size={25} color="brown" onPress={()=>{
+                    leftComponent={<Ionicons name="md-menu" size={25} color="white" onPress={()=>{
                         navigation.openDrawer();
                     }}/>}
-                    centerComponent={{ text: 'Profile', style: {fontSize:20, color: 'brown' } }}
-                    rightComponent={<Ionicons name="md-lock" size={25} color="brown" 
+                    centerComponent={{ text: 'Profile', style: {fontSize:20, color: 'white' } }}
+                    rightComponent={<Ionicons name="md-lock" size={25} color="white" 
                     onPress={()=>{
                         auth.setisLogged(false);
                         auth.setcurrentUser({});

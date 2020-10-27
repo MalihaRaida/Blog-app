@@ -89,7 +89,7 @@ const SinglePostScreen=({navigation,route})=>{
                         
                     </CardItem>
                     </Card>
-                        <WriteComment user={auth.currentUser.name}/>
+                        <WriteComment user={auth.currentUser.name} postDetails={postDetails}/>
                         {/* <FlatList
                         data={postComment}
                         refreshing={reload}

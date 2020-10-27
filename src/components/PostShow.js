@@ -4,13 +4,11 @@ import {Card,CardItem, Left, Body, Right} from 'native-base';
 import {Avatar,Button} from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 import {Text} from 'react-native';
-
 import {mergeData} from '../functions/AsyncStorageFunctions';
-
 import  AddNotification  from "../functions/NotificationFunction";
 
 
-const ShowPost=({content,currentuser})=>{
+const ShowPost=({content,currentuser,navigation})=>{
     const [like,setLike]=useState(content.likecount);
     return(<Card style={{flex: 0,marginLeft:5,marginRight:5,marginTop:10,padding:10,borderRadius:10,shadowColor:'blue', shadowOffset:10,}}>
             <CardItem>
@@ -51,7 +49,7 @@ const ShowPost=({content,currentuser})=>{
                     <Text>{like}</Text>
                 </Left>
                 <Right>
-                  <Button buttonStyle={{backgroundColor:'#3a0088'}} title="Comment" >
+                  <Button buttonStyle={{backgroundColor:'#3a0088'}} title="Comment" onPress={()=>navigation.navigate('Post',{post:content.id})}>
                   </Button>
                 </Right>
             </CardItem>
