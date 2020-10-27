@@ -39,7 +39,7 @@ const HomeScreenTab=()=> {
         component={HomeScreen}
         options={{
           tabBarLabel: 'Home',
-          tabBarColor: '#3D6DCC',
+          tabBarColor: '#3a0088',
           tabBarIcon: ({color}) => (
             <FontAwesome name="home" size={24} color={color} />
           ),
@@ -49,7 +49,7 @@ const HomeScreenTab=()=> {
         component={NotificationScreen}
         options={{
           tabBarLabel: 'Notification',
-          tabBarColor: '#694fad',
+          tabBarColor: '#930077',
           tabBarIcon: ({color}) => (
            <Ionicons name="ios-notifications" size={24} color={color} />
           ),

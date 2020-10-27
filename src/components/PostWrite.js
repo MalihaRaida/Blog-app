@@ -16,11 +16,8 @@ function ShowCurrentDate() {
 const PostWrite=({user})=>{
     const [post, setPost] = useState("");
     const input = React.createRef();
-    function forceUpdateHandler(){
-    this.forceUpdate();
-  };
     return(
-    <Card containerStyle={{borderRadius:10,shadowColor:'blue', shadowOffset:10}}>
+    <Card containerStyle={{borderRadius:10,marginLeft:5,marginRight:5, shadowOffset:10}}>
         <Input
         ref={input}
         placeholder='Write about the unknows'
@@ -31,18 +28,18 @@ const PostWrite=({user})=>{
         }}
         />
         <View style={{flexDirection:'row-reverse'}}>
-            <Button title='Post' buttonStyle={{width:100,alignSelf:'flex-start'}} onPress={
+            <Button title='Post' buttonStyle={{width:100,alignSelf:'flex-start',backgroundColor:'#3a0088'}} onPress={
                 ()=>{
                     id=Math.floor((Math.random() * 100000) + 1);
                     if(post.length>0){
                         let newPost={
                         id:"post"+id,
                         post:post,
-                        user:user.name,
+                        user_name:user.name,
+                        user_email:user.email,
                         date: ShowCurrentDate(),
                         likecount:0,
                         }
-                        // console.log(newPost);
                         storeDataJSON("post"+id,newPost);
                         setPost("");
                         input.current.clear();
@@ -55,6 +52,7 @@ const PostWrite=({user})=>{
             <Button 
             disabled={post.length==0? true:false} 
             type='clear' title='Clear' 
+            titleStyle={{color:'#3a0088'}}
             buttonStyle={{width:120,alignSelf:'flex-end'}}
             onPress={()=>{
                 setPost("");

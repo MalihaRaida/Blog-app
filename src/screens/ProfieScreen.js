@@ -13,22 +13,22 @@ import {
 } from 'react-native-paper';
 
 
-const ProfileScreen =()=>{
+const ProfileScreen =({navigation})=>{
     return(
          <AuthContext.Consumer>
             {(auth)=>
             (
             <View style={styles.container}>
-                <StatusBar style="light"/>
+                <StatusBar style="dark"/>
                 <Header
                     containerStyle={{
-                    backgroundColor: '#3D6DCC',
+                    backgroundColor: '#FFE98A',
                     justifyContent: 'space-around',}}
-                    leftComponent={<Ionicons name="md-menu" size={25} color="white" onPress={()=>{
+                    leftComponent={<Ionicons name="md-menu" size={25} color="brown" onPress={()=>{
                         navigation.openDrawer();
                     }}/>}
-                    centerComponent={{ text: 'Profile', style: { color: '#fff' } }}
-                    rightComponent={<Ionicons name="md-lock" size={25} color="white" 
+                    centerComponent={{ text: 'Profile', style: {fontSize:20, color: 'brown' } }}
+                    rightComponent={<Ionicons name="md-lock" size={25} color="brown" 
                     onPress={()=>{
                         auth.setisLogged(false);
                         auth.setcurrentUser({});
@@ -36,7 +36,7 @@ const ProfileScreen =()=>{
                     />
                 
                     <ImageBackground 
-                    source={{uri:'https://picsum.photos/800',}} 
+                    source={{uri:'https://picsum.photos/id/1040/4496/3000',}} 
                     style={{height:250,width:400}}>
                         <View style={{paddingHorizontal:140,paddingVertical:190}}>
                             <Avatar
@@ -44,7 +44,7 @@ const ProfileScreen =()=>{
                     size={120}
                     avatarStyle={{ borderWidth: 5, borderColor: 'white' }}
                     source={{
-                        uri:'https://picsum.photos/200',
+                        uri:'https://picsum.photos/id/473/5616/3744',
                     }}
                     />
                         </View>
@@ -95,7 +95,7 @@ const ProfileScreen =()=>{
                     title="Delete"
                     type='solid'
                     onPress={async ()=>{
-                        let deleted=await removeData(auth.currentUser.email);
+                        let deleted=await clear();//removeData(auth.currentUser.email);
                         if(deleted){
                             alert("User Removed Successfully");
                         }

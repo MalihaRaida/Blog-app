@@ -9,7 +9,7 @@ import  ShowNotification  from "./../components/NotifactionShow";
 
 const  NotificationScreen =({navigation})=> {
     let [notification,setNotification]=useState([]);
-    const [relaod,setReload]=useState(false);
+    const [reload,setReload]=useState(false);
 
     const getNotification = async ()=>{
         setReload(true)
@@ -32,7 +32,7 @@ const  NotificationScreen =({navigation})=> {
                 <View >
                     <Header
                     containerStyle={{
-                    backgroundColor: '#694fad',
+                    backgroundColor: '#930077',
                     justifyContent: 'space-around',
                 }}
                     leftComponent={<Ionicons name="md-menu" size={25} color="white" onPress={()=>{
@@ -48,7 +48,7 @@ const  NotificationScreen =({navigation})=> {
                     <FlatList
                         data={notification}
                         onRefresh={getNotification}
-                        refreshing={relaod}
+                        refreshing={reload}
                         renderItem={function ({ item }) {
                             if(item.receiver==auth.currentUser.email)
                                 return (

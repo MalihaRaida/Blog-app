@@ -14,7 +14,7 @@ import { getDataJSON, getAllKeys} from '../functions/AsyncStorageFunctions';
 
 const  HomeScreen =({navigation})=> {
     const [posts,setPosts]=useState([]);
-    const [relaod,setReload]=useState(false)
+    const [reload,setReload]=useState(false)
 
     const getPosts = async ()=>{
         setReload(true)
@@ -47,7 +47,7 @@ const  HomeScreen =({navigation})=> {
                     <StatusBar style="light"/>
                     <Header
                     containerStyle={{
-                    backgroundColor: '#3D6DCC',
+                    backgroundColor: '#3a0088',
                     justifyContent: 'space-around',}}
                     leftComponent={<Ionicons name="md-menu" size={25} color="white" onPress={()=>{
                         navigation.openDrawer();
@@ -64,7 +64,7 @@ const  HomeScreen =({navigation})=> {
                         <FlatList
                         data={posts}
                         onRefresh={getPosts}
-                        refreshing={relaod}
+                        refreshing={reload}
                         renderItem={function ({ item }) {
                             return (
                             <ShowPost

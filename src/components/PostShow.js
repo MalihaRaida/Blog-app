@@ -1,7 +1,7 @@
 import React,{useState} from 'react';
 
-import {Card, Button,CardItem, Left, Body, Right} from 'native-base';
-import {Avatar} from 'react-native-elements';
+import {Card,CardItem, Left, Body, Right} from 'native-base';
+import {Avatar,Button} from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 import {Text} from 'react-native';
 
@@ -12,7 +12,7 @@ import  AddNotification  from "../functions/NotificationFunction";
 
 const ShowPost=({content,currentuser})=>{
     const [like,setLike]=useState(content.likecount);
-    return(<Card style={{flex: 0}}>
+    return(<Card style={{flex: 0,marginLeft:5,marginRight:5,marginTop:10,padding:10,borderRadius:10,shadowColor:'blue', shadowOffset:10,}}>
             <CardItem>
               <Left>
                     <Avatar size='medium' rounded
@@ -33,24 +33,25 @@ const ShowPost=({content,currentuser})=>{
             </CardItem>
             <CardItem>
                 <Left>
-                    <Button transparent icon onPress={async ()=>{
+                    <Button 
+                    type="clear" 
+                    icon={<Ionicons name="md-heart-empty" size={40} color="pink" />} 
+                    onPress={async ()=>{
                         await mergeData(content.id,JSON.stringify({likecount:like+1}));
                         let likedjson={
                           postid:content.id,
                           comment:"",
 	                        receiver:content.user_email,
-	                        sender:currentuser.name
+                          sender:currentuser.name,
                         };
                         let p=await AddNotification(likedjson);
                         setLike(like+1)
                     }}>
-                    <Ionicons name="md-heart-empty" size={40} color="pink" />
                     </Button>
                     <Text>{like}</Text>
                 </Left>
                 <Right>
-                  <Button style={{backgroundColor:'#3D6DCC', width:100,paddingLeft:15}}>
-                    <Text style={{color:'white'}}>Comment</Text>
+                  <Button buttonStyle={{backgroundColor:'#3a0088'}} title="Comment" >
                   </Button>
                 </Right>
             </CardItem>

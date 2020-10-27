@@ -21,7 +21,4 @@ const AddNotification = async(value)=>{
 };
 
 
-
-
-
 export default AddNotification;
