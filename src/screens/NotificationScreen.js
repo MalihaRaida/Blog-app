@@ -45,7 +45,8 @@ const  NotificationScreen =({navigation})=> {
                         auth.setcurrentUser({});
                     }}/>}
                     />
-                    <FlatList
+                    <View>
+                        <FlatList
                         data={notification}
                         onRefresh={getNotification}
                         refreshing={reload}
@@ -59,6 +60,8 @@ const  NotificationScreen =({navigation})=> {
                         }}
                         keyExtractor={(item, index) => index.toString()}
                         />
+                    </View>
+                    
                     
                 </View>
                 

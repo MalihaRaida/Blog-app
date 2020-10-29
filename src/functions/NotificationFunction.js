@@ -5,9 +5,8 @@ const AddNotification = async(value)=>{
     try{
         let storedNotification=await getDataJSON('notification');
         if(storedNotification!=null){
-            notifies.push(storedNotification)
-            notifies.push(value)
-            await storeDataJSON('notification',notifies);
+            storedNotification.push(value)
+            await storeDataJSON('notification',storedNotification);
         }
         else{
             notifies.push(value)
