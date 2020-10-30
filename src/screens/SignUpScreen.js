@@ -2,8 +2,9 @@ import React,{useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { ImageBackground,StyleSheet, Text, View } from 'react-native';
 import { Card,Input, Button } from 'react-native-elements';
-import { AntDesign,Ionicons,MaterialIcons,Feather  } from '@expo/vector-icons';
+import { Ionicons,MaterialIcons,Feather  } from '@expo/vector-icons';
 import {storeDataJSON} from './../functions/AsyncStorageFunctions';
+import * as Animatable from 'react-native-animatable';
 
 
 // function validateEmail (email) {
@@ -21,6 +22,15 @@ const SignupScreen =(props)=> {
     let [studentID,setStudentID]=useState("");
     let [email,setEmail]=useState("");
     let [password,setPassword]=useState("");
+    let [isInvalidEmail,setInvalidEmail]=useState(true);
+
+    const validateEmail=(email)=>{
+        var re = /\S+@\S+\.\S+/;
+        if(re.test(email)==true)
+            setInvalidEmail(false)
+        else 
+            setInvalidEmail(true)
+    }
 
     return(
         <View style={styles.container}>
@@ -32,14 +42,17 @@ const SignupScreen =(props)=> {
             style={styles.image}
             source={require('./../../assets/coast-rocks-blue-green-sea-nature-small.jpg')}>
             <Text style={styles.text}>TRAVELS</Text>
-            <Card containerStyle={styles.card}>
+            <Animatable.View animation="fadeInUpBig" delay={2}>
+                         <Card containerStyle={styles.card}>
                 <Card.Title style={{fontSize:20}}>Sign Up</Card.Title>
                 <Card.Divider />
                 <Input 
                 leftIcon={<Ionicons name="ios-person" size={24} color="black" />}
-                placeholder="Username" onChangeText={function (input) {
+                placeholder="Username" 
+                onChangeText={function (input) {
                     setName(input);
-                }}/>
+                }}
+                />
                 <Input
                 keyboardType = 'numeric' 
                 leftIcon={<Ionicons name="md-school" size={24} color="black" />}
@@ -52,15 +65,19 @@ const SignupScreen =(props)=> {
                 errorStyle={{ color: 'red' }}
                 onChangeText={function (input) {
                     setEmail(input);
+                    validateEmail(input)
                 }}
-                
+                errorMessage={isInvalidEmail?"Invalid Email Address":""}
                 />
                 <Input 
+                containerStyle={{paddingBottom:20}}
                 leftIcon={<MaterialIcons name="vpn-key" size={24} color="black"/>}
                 placeholder="Password" 
                 secureTextEntry={true} onChangeText={function (input) {
                     setPassword(input);
-                }}/>
+                }}
+                errorMessage={password.length<4?"Password have to be of 4 characters":""}
+                />
                 <Button
                 icon={<Feather name="user" size={25} color="white" />}
                 titleStyle={{paddingLeft:10}}
@@ -68,14 +85,19 @@ const SignupScreen =(props)=> {
                 type="solid"
                 onPress={
                     function () {
-                        let user={
+                        if(name.length>0 && isInvalidEmail==false && studentID.length>0 && password.length>=4)
+                        {
+                            let user={
                             name:name,
                             email:email,
                             id:studentID,
                             password:password,
-                        }
-                        storeDataJSON(email,user);
-                        props.navigation.navigate("Log In");
+                            }
+                            storeDataJSON(email,user);
+                            alert("Account Created")
+                            props.navigation.push("Log In");
+                        }else alert("Invalid Input")
+                        
                     }
                 }
                 />
@@ -83,10 +105,11 @@ const SignupScreen =(props)=> {
                 type="clear"
                 title="Already have an account"
                 onPress={function () {
-                    props.navigation.navigate("Log In");
+                    props.navigation.push("Log In");
                 }}
                 />
             </Card>
+            </Animatable.View>
             </ImageBackground>  
         </View>
         );
