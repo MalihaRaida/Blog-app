@@ -1,5 +1,5 @@
 import  React, { useEffect, useState } from "react";
-import { View,FlatList,Text } from "react-native";
+import {StyleSheet, View,FlatList,Text } from "react-native";
 import {AuthContext} from '../providers/AuthProvider';
 import { Header,Avatar} from 'react-native-elements';
 import { StatusBar } from 'expo-status-bar';
@@ -7,12 +7,12 @@ import { Ionicons } from '@expo/vector-icons';
 import {Card, CardItem, Button, Left, Body, Right} from 'native-base';
 import {getDataJSON} from './../functions/AsyncStorageFunctions';
 import WriteComment from '../components/CommentWrite';
-
+import ShowComment from "./../components/CommentShow";
 
 const SinglePostScreen=({navigation,route})=>{
     let postId=route.params.post
     let [postDetails,setpostDetails]=useState({});
-    let [postComment,setComment]=useState([]);
+    const [postComment,setComment]=useState([]);
     const [reload,setReload]=useState(false);
     const getPostDetails =async()=>{
         let postDetails=await getDataJSON(postId);
@@ -26,7 +26,7 @@ const SinglePostScreen=({navigation,route})=>{
         setReload(true)
         let allComment=await getDataJSON('notification');
         if(allComment!=null){
-            const Comment=allComment.filter(c=>c.postid==postDetails.id && c.comment!='')
+            let Comment=allComment.filter(c=>c.postid==postDetails.id && c.comment!='')
             setComment(Comment)
         }
         else console.log("no comment")
@@ -35,14 +35,17 @@ const SinglePostScreen=({navigation,route})=>{
 
     useEffect(()=>{
         getPostDetails();
-        getComments();
     },[]);
+
+    useEffect(()=>{
+        getComments();
+    });
 
     return(
         <AuthContext.Consumer>
             {(auth)=>
             (
-                <View >
+                <View style={styles.container}>
                     <StatusBar style="light"/>
                     <Header
                     containerStyle={{
@@ -58,8 +61,6 @@ const SinglePostScreen=({navigation,route})=>{
                         auth.setcurrentUser({});
                     }}/>}
                     />
-
-                <Text></Text>
 
                 <Card style={{flex: 0,marginLeft:5,marginRight:5,marginTop:10,padding:10,borderRadius:10,shadowColor:'blue', shadowOffset:10,}}>
                     <CardItem header>
@@ -90,16 +91,16 @@ const SinglePostScreen=({navigation,route})=>{
                     </CardItem>
                     </Card>
                         <WriteComment user={auth.currentUser.name} postDetails={postDetails}/>
-                        {/* <FlatList
-                        data={postComment}
-                        refreshing={reload}
-                        onRefresh={getComments}
-                        renderItem={function ({item}) {
-                            console.log(item)
-                        }}
-                        keyExtractor={(item, index) => index.toString()}
-                        /> */}
-                
+                        <FlatList
+                            data={postComment}
+                            // onRefresh={getComments}
+                            // refreshing={reload}
+                            renderItem={({item}) =>{
+                                return <ShowComment content={item} />
+                                // return(<Text>Hello</Text>)
+                            }}
+                            keyExtractor={(item, index) => index.toString()}
+                        />
                 </View>
                 )}
         </AuthContext.Consumer>
@@ -108,6 +109,10 @@ const SinglePostScreen=({navigation,route})=>{
 
 };
 
-
+const styles = StyleSheet.create({
+    container:{
+        flex:1,
+    },
+});
 
 export default SinglePostScreen;

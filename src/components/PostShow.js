@@ -1,5 +1,4 @@
 import React,{useState} from 'react';
-
 import {Card,CardItem, Left, Body, Right} from 'native-base';
 import {Avatar,Button} from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';

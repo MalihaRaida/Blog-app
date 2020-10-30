@@ -15,7 +15,6 @@ import { getDataJSON, getAllKeys} from '../functions/AsyncStorageFunctions';
 const  HomeScreen =({navigation})=> {
     const [posts,setPosts]=useState([]);
     const [reload,setReload]=useState(false)
-
     const getPosts = async ()=>{
         setReload(true)
         let keys=await getAllKeys();
@@ -84,10 +83,6 @@ const  HomeScreen =({navigation})=> {
 }
 
 const styles=StyleSheet.create({
-    TextStyle:{
-        fontSize:30,
-        color:'blue',
-    },
     container:{
         flex:1,
         justifyContent: "center",

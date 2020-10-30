@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import { StyleSheet, FlatList, View } from 'react-native';
+import {  FlatList, View } from 'react-native';
 import {Header} from 'react-native-elements';
 import {AuthContext} from '../providers/AuthProvider';
 import { Ionicons} from '@expo/vector-icons';
@@ -29,7 +29,7 @@ const  NotificationScreen =({navigation})=> {
         <AuthContext.Consumer>
             {(auth)=>
             (
-                <View >
+                <View style={{flex:1}} >
                     <Header
                     containerStyle={{
                     backgroundColor: '#930077',
@@ -70,16 +70,6 @@ const  NotificationScreen =({navigation})=> {
     );
 }
 
-const styles=StyleSheet.create({
-    TextStyle:{
-        fontSize:30,
-        color:'blue',
-    },
-    container:{
-        flex:1,
-        justifyContent: "center",
-        
-    },
-});
+
 
 export default NotificationScreen;
