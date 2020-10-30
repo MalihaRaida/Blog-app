@@ -40,7 +40,7 @@ const SignupScreen =(props)=> {
             barStyle="light-content"/>
             <ImageBackground
             style={styles.image}
-            source={require('./../../assets/coast-rocks-blue-green-sea-nature-small.jpg')}>
+            source={{uri:'http://picsum.photos/id/474/4288/2848'}}>
             <Text style={styles.text}>TRAVELS</Text>
             <Animatable.View animation="fadeInUpBig" delay={2}>
                          <Card containerStyle={styles.card}>
