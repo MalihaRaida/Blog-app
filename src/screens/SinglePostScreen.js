@@ -23,7 +23,7 @@ const SinglePostScreen=({navigation,route})=>{
     }
 
     const getComments=async ()=>{
-        setReload(true)
+       
         let allComment=await getDataJSON('notification');
         if(allComment!=null){
             let Comment=allComment.filter(c=>c.postid==postDetails.id && c.comment!='')
@@ -52,7 +52,7 @@ const SinglePostScreen=({navigation,route})=>{
                     backgroundColor: '#e61c5d',
                     justifyContent: 'space-around',}}
                     leftComponent={<Ionicons name="md-arrow-back" size={25} color="white" onPress={()=>{
-                        navigation.goBack();
+                        navigation.navigate("Home");
                     }}/>}
                     centerComponent={{ text: 'Post', style: { fontSize:20,color: '#fff' } }}
                     rightComponent={<Ionicons name="md-lock" size={25} color="white" 
@@ -93,11 +93,10 @@ const SinglePostScreen=({navigation,route})=>{
                         <WriteComment user={auth.currentUser.name} postDetails={postDetails}/>
                         <FlatList
                             data={postComment}
-                            // onRefresh={getComments}
-                            // refreshing={reload}
+                            onRefresh={getComments}
+                            refreshing={reload}
                             renderItem={({item}) =>{
                                 return <ShowComment content={item} />
-                                // return(<Text>Hello</Text>)
                             }}
                             keyExtractor={(item, index) => index.toString()}
                         />

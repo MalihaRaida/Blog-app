@@ -7,16 +7,6 @@ import {storeDataJSON} from './../functions/AsyncStorageFunctions';
 import * as Animatable from 'react-native-animatable';
 
 
-// function validateEmail (email) {
-// let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-//   if (reg.test(email) === false){
-//       return true;
-//   }
-//   else {
-//       return false;
-//   }
-// }
-
 const SignupScreen =(props)=> {
     let [name,setName]=useState("");
     let [studentID,setStudentID]=useState("");
