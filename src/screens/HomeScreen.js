@@ -7,9 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import PostWrite from './../components/PostWrite';
 import ShowPost from './../components/PostShow';
 
-
-
-import { getDataJSON, getAllKeys} from '../functions/AsyncStorageFunctions';
+import {getAllPosts} from '../functions/PostFunction';
 
 
 const  HomeScreen =({navigation})=> {
@@ -17,19 +15,12 @@ const  HomeScreen =({navigation})=> {
     const [reload,setReload]=useState(false)
     const getPosts = async ()=>{
         setReload(true)
-        let keys=await getAllKeys();
-        let Allposts=[];
-        if(keys!=null ){
-            for (let key of keys) {
-                if (key.startsWith('post')) {
-                    let post=await getDataJSON(key);
-                    Allposts.push(post);
-                }
-            }
-            setPosts(Allposts);
+        let Allposts= await getAllPosts();
+        if(posts!=null)
+        {
+            setPosts(Allposts)
         }
-        else
-            console.log("no keys");
+        else console.log("no Posts")
         setReload(false);
     }
 
