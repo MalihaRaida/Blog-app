@@ -4,7 +4,7 @@ import {View,StyleSheet,ImageBackground} from 'react-native';
 import { AuthContext } from '../providers/AuthProvider';
 import { Header} from 'react-native-elements';
 import { FontAwesome,Ionicons,AntDesign,Feather } from '@expo/vector-icons';
-import {removeData,clear} from './../functions/AsyncStorageFunctions';
+import {clear, removeData} from './../functions/AsyncStorageFunctions';
 import { Avatar,Button } from "react-native-elements";
 import {
     Title,
@@ -12,8 +12,21 @@ import {
     Text,
 } from 'react-native-paper';
 
+import {getUserPost} from './../functions/PostFunction';
+
 
 const ProfileScreen =({navigation})=>{
+
+    const deleteUserProfile=async(email)=>{
+        let deleted=false;
+        let postId=await getUserPost(email)
+        for(let id of postId){
+            deleted=await removeData(id);
+        }
+        deleted=await removeData(email);
+        return deleted;
+    }
+
     return(
          <AuthContext.Consumer>
             {(auth)=>
@@ -37,8 +50,8 @@ const ProfileScreen =({navigation})=>{
                 
                     <ImageBackground 
                     source={{uri:'https://picsum.photos/id/1040/4496/3000',}} 
-                    style={{height:250,width:400}}>
-                        <View style={{paddingHorizontal:140,paddingVertical:190}}>
+                    style={{height:200,width:400}}>
+                        <View style={{paddingHorizontal:140,paddingVertical:140}}>
                             <Avatar
                     rounded
                     size={120}
@@ -50,31 +63,30 @@ const ProfileScreen =({navigation})=>{
                         </View>
                     </ImageBackground>
                     
-                    <View style={{alignItems:'center',marginTop:65,marginBottom:10,marginLeft:10}}>
+                    <View style={{alignItems:'center',marginTop:65,marginLeft:10}}>
                     <Title style={styles.title}>{auth.currentUser.name}</Title>
                     <Caption style={styles.caption}>{auth.currentUser.email}</Caption>
                     </View>
                 
                 <View style={{
-                    marginTop:20,
-                    paddingHorizontal:30,
-                    marginBottom:25,}}>   
-                <View style={styles.row}>
-                    <Feather name="map-pin" size={24} color="#777777" />
-                    <Text style={{marginLeft:20,color:"#777777"}}>{auth.currentUser.location==null?"No value set yet":"Stays at "+auth.currentUser.location}</Text>
-                </View>
-                <View style={styles.row}>
-                   <FontAwesome name="birthday-cake" size={24} color="#777777" />
-                    <Text style={{marginLeft:20,color:"#777777"}}>{auth.currentUser.bday==null?"No value set yet":"Born on "+auth.currentUser.bday}</Text>
-                </View>
-                <View style={styles.row}>
-                    <FontAwesome name="institution" size={24} color="#777777" />
-                    <Text style={{marginLeft:20,color:"#777777"}}>{auth.currentUser.works==null?"No value set yet":"Works at "+auth.currentUser.works}</Text>
-                </View>
-                <View style={styles.row}>
-                    <AntDesign name="idcard" size={25} color="#777777" />
-                    <Text style={{marginLeft:20,color:"#777777"}}>{auth.currentUser.id}</Text>
-                </View>
+                    marginTop:15,
+                    marginBottom:15,}}>   
+                    <View style={styles.row}>
+                        <Feather name="map-pin" size={24} color="#777777" />
+                        <Text style={{marginLeft:20,color:"#777777"}}>{auth.currentUser.location==null||auth.currentUser.location==""?"No value set yet":"Stays at "+auth.currentUser.location}</Text>
+                    </View>
+                    <View style={styles.row}>
+                    <FontAwesome name="birthday-cake" size={24} color="#777777" />
+                        <Text style={{marginLeft:20,color:"#777777"}}>{auth.currentUser.bday==null||auth.currentUser.bday==""?"No value set yet":"Born on "+auth.currentUser.bday}</Text>
+                    </View>
+                    <View style={styles.row}>
+                        <FontAwesome name="institution" size={24} color="#777777" />
+                        <Text style={{marginLeft:20,color:"#777777"}}>{auth.currentUser.works==null||auth.currentUser.works==""?"No value set yet":"Works at "+auth.currentUser.works}</Text>
+                    </View>
+                    <View style={styles.row}>
+                        <AntDesign name="idcard" size={25} color="#777777" />
+                        <Text style={{marginLeft:20,color:"#777777"}}>{auth.currentUser.id}</Text>
+                    </View>
                 </View>
                 <View style={{flexDirection:'row'}}>
                     <Button
@@ -84,7 +96,7 @@ const ProfileScreen =({navigation})=>{
                     title="Settings"
                     type='outline'
                     onPress={()=>{
-                        console.log("Settings")
+                        navigation.push("Settings")
                     }}
                     />
                     <Button
@@ -95,16 +107,17 @@ const ProfileScreen =({navigation})=>{
                     title="Delete"
                     type='solid'
                     onPress={async ()=>{
-                        let deleted=await clear();//removeData(auth.currentUser.email);
+                        let deleted=await deleteUserProfile(auth.currentUser.email);
                         if(deleted){
                             alert("User Removed Successfully");
+                            auth.setisLogged(false);
+                            auth.setcurrentUser({});
                         }
                         else{
                             alert("Delete action unsuccessful");
                         }
                     }}
                     />
-
                 </View>
 
             </View>)}
@@ -133,7 +146,13 @@ const styles=StyleSheet.create({
     },
     row:{
         flexDirection:'row',
-        marginBottom:10,
+        marginBottom:15,
+        backgroundColor:'white',
+        padding:10,
+        borderRadius:10,
+        marginHorizontal:10,
+        shadowOpacity:50,
+        elevation:10
     },
     
 });
