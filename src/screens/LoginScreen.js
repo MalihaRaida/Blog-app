@@ -49,7 +49,7 @@ const LoginScreen =(props)=> {
                         if(email.length!=0 && password.length!=0)
                         {
                             let user= await getDataJSON(email);
-                            if(user.password==password)
+                            if(user!=null && user.password==password)
                             {
                                 auth.setisLogged(true);
                                 auth.setcurrentUser(user);
