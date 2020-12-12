@@ -5,7 +5,7 @@ import {AuthContext} from '../providers/AuthProvider';
 import { Ionicons} from '@expo/vector-icons';
 import { getDataJSON } from "./../functions/AsyncStorageFunctions";
 import  ShowNotification  from "./../components/NotifactionShow";
-
+import * as firebase from 'firebase';
 
 const  NotificationScreen =({navigation})=> {
     let [notification,setNotification]=useState([]);
@@ -41,8 +41,13 @@ const  NotificationScreen =({navigation})=> {
                     centerComponent={{ text: 'Notification', style: {fontSize:20, color: '#fff' } }}
                     rightComponent={<Ionicons name="md-lock" size={25} color="white" 
                     onPress={()=>{
-                        auth.setisLogged(false);
-                        auth.setcurrentUser({});
+                        firebase
+                        .auth()
+                        .signOut()
+                        .then(()=>{
+                            auth.setisLogged(false);
+                            auth.setcurrentUser({});
+                        }).catch((error)=>console.log(error))
                     }}/>}
                     />
                     <View>

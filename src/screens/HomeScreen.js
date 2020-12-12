@@ -6,7 +6,7 @@ import {AuthContext} from './../providers/AuthProvider';
 import { Ionicons } from '@expo/vector-icons';
 import PostWrite from './../components/PostWrite';
 import ShowPost from './../components/PostShow';
-
+import * as firebase from "firebase";
 import {getAllPosts} from '../functions/PostFunction';
 
 
@@ -45,8 +45,13 @@ const  HomeScreen =({navigation})=> {
                     centerComponent={{ text: 'Home', style: { fontSize:20,color: '#fff' } }}
                     rightComponent={<Ionicons name="md-lock" size={25} color="white" 
                     onPress={()=>{
-                        auth.setisLogged(false);
-                        auth.setcurrentUser({});
+                        firebase
+                        .auth()
+                        .signOut()
+                        .then(()=>{
+                            auth.setisLogged(false);
+                            auth.setcurrentUser({});
+                        }).catch((error)=>console.log(error))
                     }}/>}
                     />
                     

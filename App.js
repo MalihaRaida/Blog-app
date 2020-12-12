@@ -26,11 +26,6 @@ import SettingScreen from './src/screens/SettingScreen';
     messagingSenderId: "35208079373",
     appId: "1:35208079373:web:6981616927e65eb5b18d44"
   };
-  if(!firebase.app.length){
-    firebase.initializeApp(firebaseConfig);
-  }
-  
-
 const Authstack = createStackNavigator();
 const Notificationstack = createStackNavigator();
 const HomeTab= createMaterialBottomTabNavigator();
@@ -97,6 +92,11 @@ const AuthScreenStack=()=> {
 };
 
 export default function App() {
+  if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+  }
+  else
+    firebase.app();
   return (
     <AuthProvider>
       <AuthContext.Consumer>

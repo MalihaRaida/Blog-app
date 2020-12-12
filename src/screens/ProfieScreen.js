@@ -12,6 +12,7 @@ import {
     Text,
 } from 'react-native-paper';
 
+import * as firebase from 'firebase';
 import {getUserPost} from './../functions/PostFunction';
 
 
@@ -43,8 +44,13 @@ const ProfileScreen =({navigation})=>{
                     centerComponent={{ text: 'Profile', style: {fontSize:20, color: 'white' } }}
                     rightComponent={<Ionicons name="md-lock" size={25} color="white" 
                     onPress={()=>{
-                        auth.setisLogged(false);
-                        auth.setcurrentUser({});
+                        firebase
+                        .auth()
+                        .signOut()
+                        .then(()=>{
+                            auth.setisLogged(false);
+                            auth.setcurrentUser({});
+                        }).catch((error)=>console.log(error))
                     }}/>}
                     />
                 
