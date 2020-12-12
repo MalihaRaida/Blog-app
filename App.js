@@ -1,6 +1,8 @@
 import React from 'react';
 
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet} from 'react-native';
+import * as firebase from "firebase";
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -15,6 +17,19 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import ProfileScreen from './src/screens/ProfieScreen';
 import SettingScreen from './src/screens/SettingScreen';
 
+
+ const firebaseConfig = {
+    apiKey: "AIzaSyA1y5rLtRUCp84ZAEJv8ldFKksSrS0olVI",
+    authDomain: "blogapp-2852.firebaseapp.com",
+    projectId: "blogapp-2852",
+    storageBucket: "blogapp-2852.appspot.com",
+    messagingSenderId: "35208079373",
+    appId: "1:35208079373:web:6981616927e65eb5b18d44"
+  };
+  if(!firebase.app.length){
+    firebase.initializeApp(firebaseConfig);
+  }
+  
 
 const Authstack = createStackNavigator();
 const Notificationstack = createStackNavigator();

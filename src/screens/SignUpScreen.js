@@ -3,7 +3,9 @@ import { StatusBar } from 'expo-status-bar';
 import { ImageBackground,StyleSheet, Text, View } from 'react-native';
 import { Card,Input, Button } from 'react-native-elements';
 import { Ionicons,MaterialIcons,Feather  } from '@expo/vector-icons';
-import {storeDataJSON} from './../functions/AsyncStorageFunctions';
+// import {storeDataJSON} from './../functions/AsyncStorageFunctions';
+import * as firebase from 'firebase';
+import 'firebase/firestore';
 import * as Animatable from 'react-native-animatable';
 
 
@@ -66,7 +68,7 @@ const SignupScreen =(props)=> {
                 secureTextEntry={true} onChangeText={function (input) {
                     setPassword(input);
                 }}
-                errorMessage={password.length<4?"Password have to be of 4 characters":""}
+                errorMessage={password.length<6?"Password have to be of 6 characters":""}
                 />
                 <Button
                 icon={<Feather name="user" size={25} color="white" />}
@@ -75,17 +77,28 @@ const SignupScreen =(props)=> {
                 type="solid"
                 onPress={
                     function () {
-                        if(name.length>0 && isInvalidEmail==false && studentID.length>0 && password.length>=4)
+                        if(name.length>0 && isInvalidEmail==false && studentID.length>0 && password.length>=6)
                         {
-                            let user={
-                            name:name,
-                            email:email,
-                            id:studentID,
-                            password:password,
-                            }
-                            storeDataJSON(email,user);
-                            alert("Account Created")
-                            props.navigation.push("Log In");
+                            firebase
+                            .auth().
+                            createUserWithEmailAndPassword(email,password)
+                            .then(
+                            (userCreds)=>{
+                                userCreds.user.updateProfile({displayName:name});
+                                firebase.firestore().collection('users').doc(userCreds.user.uid).set({
+                                    name:name,
+                                    sid:studentID,
+                                    email:email,
+                                })
+                                .then(()=>{
+                                    alert(userCreds.user.uid+" Account Created")
+                                    props.navigation.push("Log In");
+                                })
+                            })
+                            .catch((error)=>{
+                                alert(error)
+                            })
+
                         }else alert("Invalid Input")
                         
                     }
