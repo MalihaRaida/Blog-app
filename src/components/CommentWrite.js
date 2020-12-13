@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import * as firebase from "firebase";
 import "firebase/firestore";
 import { Card, Button ,Input} from 'react-native-elements';
-import AddNotification from '../functions/NotificationFunction';
+// import AddNotification from '../functions/NotificationFunction';
 
 
 const WriteComment=({user,postDetails})=>{

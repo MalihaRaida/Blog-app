@@ -5,7 +5,6 @@ import { Header,Avatar} from 'react-native-elements';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import {Card, CardItem, Button, Left, Body, Right} from 'native-base';
-import {getDataJSON} from './../functions/AsyncStorageFunctions';
 import WriteComment from '../components/CommentWrite';
 import ShowComment from "./../components/CommentShow";
 
@@ -13,26 +12,25 @@ import * as firebase from "firebase";
 import "firebase/firestore";
 
 const SinglePostScreen=({navigation,route})=>{
-    let post=route.params.post.data
+    let postData=route.params.post.data
     let postid=route.params.post.id
-    let createDate=post.createdAt.toDate().toDateString()
     const [postComment,setComment]=useState([]);
-    // const [reload,setReload]=useState(false);
+    const [reload,setReload]=useState(false);
 
-    const getComments=async ()=>{
+    const getComments=async()=>{
         firebase
         .firestore()
         .collection("notifications")
         .onSnapshot((querySnapshot)=>{
+            let allComment=[]
             querySnapshot.forEach((doc)=>{
-                let allComment=[]
                 allComment.push({
                     id:doc.id,
                     data:doc.data(),
                 });
             });
             if(allComment!=null){
-                let Comment=allComment.filter(c=>c.postid==postid && c.comment!=null)
+                let Comment=allComment.filter(c=>c.data.postid==postid && c.data.comment!=undefined)
                 setComment(Comment)
             }
             else console.log("no comment")
@@ -80,14 +78,14 @@ const SinglePostScreen=({navigation,route})=>{
                                 overlayContainerStyle={{backgroundColor: 'grey'}}
                                 icon={{name: 'user', type: 'font-awesome'}} />
                             <Body>
-                            <Text style={{fontSize:15}}>{post.user_name}</Text>
-                            <Text style={{color:'grey'}}>{createDate}</Text>
+                            <Text style={{fontSize:15}}>{postData.user_name}</Text>
+                            <Text style={{color:'grey'}}>{postData.createdAt.toDate().toDateString()}</Text>
                             </Body>
                         </Left>
                     </CardItem>
                     <CardItem>
                         <Body>
-                            <Text style={{fontSize:15}}>{post.post}</Text>
+                            <Text style={{fontSize:15}}>{postData.post}</Text>
                         </Body>
                         
                     </CardItem>
@@ -96,7 +94,7 @@ const SinglePostScreen=({navigation,route})=>{
                             <Button transparent icon>
                                 <Ionicons name="ios-heart" size={40} color="pink" />
                             </Button>
-                            <Text>{post.likecount}</Text>
+                            <Text>{postData.likecount}</Text>
                         </Left>
                         
                     </CardItem>
@@ -107,7 +105,7 @@ const SinglePostScreen=({navigation,route})=>{
                             onRefresh={getComments}
                             refreshing={reload}
                             renderItem={({item}) =>{
-                                return <ShowComment content={item} />
+                                return <ShowComment content={item.data} />
                             }}
                             keyExtractor={(item, index) => index.toString()}
                         />
