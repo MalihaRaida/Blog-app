@@ -1,16 +1,10 @@
 import React,{useState} from 'react';
 import { View } from 'react-native';
-
+import * as firebase from "firebase";
+import "firebase/firestore";
 import { Card, Button ,Input} from 'react-native-elements';
-import { storeDataJSON} from '../functions/AsyncStorageFunctions';
-import moment from 'moment';
+
 import { Entypo} from '@expo/vector-icons';
-
-
-function ShowCurrentDate() {
-      var date = new moment().format('DD MMM YYYY');
-      return date;
-}
 
 
 const PostWrite=({user})=>{
@@ -20,7 +14,7 @@ const PostWrite=({user})=>{
     <Card containerStyle={{borderRadius:10,marginLeft:5,marginRight:5, shadowOffset:10}}>
         <Input
         ref={input}
-        placeholder='Write about the unknows'
+        placeholder='Write about the unknowns'
         multiline={true}
         leftIcon={<Entypo name="pencil" size={24} color="black" />}
         onChangeText={(text)=>{
@@ -29,18 +23,24 @@ const PostWrite=({user})=>{
         />
         <View style={{flexDirection:'row-reverse'}}>
             <Button title='Post' buttonStyle={{width:100,alignSelf:'flex-start',backgroundColor:'#3a0088'}} onPress={
-                ()=>{
-                    id=Math.floor((Math.random() * 100000) + 1);
-                    if(post.length>0){
-                        let newPost={
-                        id:"post"+id,
-                        post:post,
-                        user_name:user.name,
-                        user_email:user.email,
-                        date: ShowCurrentDate(),
-                        likecount:0,
-                        }
-                        storeDataJSON("post"+id,newPost);
+                async ()=>{
+                    if(post.length>0){ 
+                        firebase
+                        .firestore()
+                        .collection("posts")
+                        .add({
+                            post:post,
+                            user_name:user.displayName,
+                            user_email:user.email,
+                            createdAt: firebase.firestore.Timestamp.now(),
+                            likecount:0
+                        }).then((docRef)=>{
+                            alert("Post ID: "+ docRef.id);
+                        })
+                        .catch((error)=> {
+                            alert(error);
+                        });
+
                         setPost("");
                         input.current.clear();
                     }

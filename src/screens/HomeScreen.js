@@ -1,27 +1,39 @@
 import React,{useState,useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import {StyleSheet ,View,FlatList ,Button} from 'react-native';
+import {StyleSheet ,View,FlatList } from 'react-native';
 import { Header} from 'react-native-elements';
 import {AuthContext} from './../providers/AuthProvider';
 import { Ionicons } from '@expo/vector-icons';
 import PostWrite from './../components/PostWrite';
 import ShowPost from './../components/PostShow';
 import * as firebase from "firebase";
-import {getAllPosts} from '../functions/PostFunction';
-
+import "firebase/firestore";
+//import {getAllPosts} from '../functions/PostFunction';
 
 const  HomeScreen =({navigation})=> {
     const [posts,setPosts]=useState([]);
     const [reload,setReload]=useState(false)
+
     const getPosts = async ()=>{
         setReload(true)
-        let Allposts= await getAllPosts();
-        if(posts!=null)
-        {
-            setPosts(Allposts)
-        }
-        else console.log("no Posts")
-        setReload(false);
+         firebase
+        .firestore()
+        .collection("posts")
+        .orderBy("createdAt","desc")
+        .onSnapshot((querySnapshot)=>{
+            let Allposts=[]
+            querySnapshot.forEach((doc)=>{
+                Allposts.push({
+                    id: doc.id,
+                    data: doc.data(),
+                });
+            });
+            setPosts(Allposts);
+            setReload(false)
+        },(error)=>{
+            setReload(false);
+            console.log(error);
+        });
     }
 
     useEffect(()=>{
