@@ -16,7 +16,7 @@ import NotificationScreen from './src/screens/NotificationScreen';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import ProfileScreen from './src/screens/ProfieScreen';
 import SettingScreen from './src/screens/SettingScreen';
-
+import CustomDrawer from "./src/screens/CustomDrawer";
 
  const firebaseConfig = {
     apiKey: "AIzaSyA1y5rLtRUCp84ZAEJv8ldFKksSrS0olVI",
@@ -30,13 +30,16 @@ const Authstack = createStackNavigator();
 const Notificationstack = createStackNavigator();
 const HomeTab= createMaterialBottomTabNavigator();
 const Drawer=createDrawerNavigator();
-const ProfileStack=createStackNavigator();
+
 
 const DrawerScreens=()=>{
   return(
-    <Drawer.Navigator initialRouteName="Home">
+    <Drawer.Navigator 
+    initialRouteName="Home" 
+    drawerContent={props=> <CustomDrawer {...props}/>}>
         <Drawer.Screen name="Home" component={NotificationScreenStack} />
-        <Drawer.Screen name="Profile" component={ProfieScreenStack} />
+        <Drawer.Screen name="Profile"  component={ProfileScreen} options={{ headerShown: false }} />
+        <Drawer.Screen name="SettingsScreen" component={SettingScreen} options={{ headerShown: false }}/>
   </Drawer.Navigator>
   ); 
 }
@@ -69,12 +72,6 @@ const HomeScreenTab=()=> {
     </HomeTab.Navigator>);
 };
 
-const ProfieScreenStack=()=>{
-  return(<ProfileStack.Navigator>
-    <ProfileStack.Screen name="Profile"  component={ProfileScreen} options={{ headerShown: false }}/>
-    <ProfileStack.Screen name="Settings" component={SettingScreen} options={{ headerShown: false }}/>
-  </ProfileStack.Navigator>)
-};
 
 const NotificationScreenStack=()=>{
   return(<Notificationstack.Navigator >
