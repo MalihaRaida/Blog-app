@@ -9,37 +9,43 @@ import {getDataJSON} from './../functions/AsyncStorageFunctions';
 import WriteComment from '../components/CommentWrite';
 import ShowComment from "./../components/CommentShow";
 
+import * as firebase from "firebase";
+import "firebase/firestore";
+
 const SinglePostScreen=({navigation,route})=>{
-    let postId=route.params.post
-    let [postDetails,setpostDetails]=useState({});
+    let post=route.params.post.data
+    let postid=route.params.post.id
+    let createDate=post.createdAt.toDate().toDateString()
     const [postComment,setComment]=useState([]);
-    const [reload,setReload]=useState(false);
-    const getPostDetails =async()=>{
-        let postDetails=await getDataJSON(postId);
-        if(postDetails!=null){
-            setpostDetails(postDetails);
-        }
-        else console.log("no post")
-    }
+    // const [reload,setReload]=useState(false);
 
     const getComments=async ()=>{
-       
-        let allComment=await getDataJSON('notification');
-        if(allComment!=null){
-            let Comment=allComment.filter(c=>c.postid==postDetails.id && c.comment!='')
-            setComment(Comment)
-        }
-        else console.log("no comment")
-        setReload(false)
+        firebase
+        .firestore()
+        .collection("notifications")
+        .onSnapshot((querySnapshot)=>{
+            querySnapshot.forEach((doc)=>{
+                let allComment=[]
+                allComment.push({
+                    id:doc.id,
+                    data:doc.data(),
+                });
+            });
+            if(allComment!=null){
+                let Comment=allComment.filter(c=>c.postid==postid && c.comment!=null)
+                setComment(Comment)
+            }
+            else console.log("no comment")
+            setReload(false)
+        },(error)=>{
+            setReload(false);
+            console.log(error);
+        });
     }
-
-    useEffect(()=>{
-        getPostDetails();
-    },[]);
 
     useEffect(()=>{
         getComments();
-    });
+    },[]);
 
     return(
         <AuthContext.Consumer>
@@ -57,8 +63,13 @@ const SinglePostScreen=({navigation,route})=>{
                     centerComponent={{ text: 'Post', style: { fontSize:20,color: '#fff' } }}
                     rightComponent={<Ionicons name="md-lock" size={25} color="white" 
                     onPress={()=>{
-                        auth.setisLogged(false);
-                        auth.setcurrentUser({});
+                        firebase
+                        .auth()
+                        .signOut()
+                        .then(()=>{
+                            auth.setisLogged(false);
+                            auth.setcurrentUser({});
+                        }).catch((error)=>console.log(error))
                     }}/>}
                     />
 
@@ -69,14 +80,14 @@ const SinglePostScreen=({navigation,route})=>{
                                 overlayContainerStyle={{backgroundColor: 'grey'}}
                                 icon={{name: 'user', type: 'font-awesome'}} />
                             <Body>
-                            <Text style={{fontSize:15}}>{postDetails.user_name}</Text>
-                            <Text style={{color:'grey'}}>{postDetails.date}</Text>
+                            <Text style={{fontSize:15}}>{post.user_name}</Text>
+                            <Text style={{color:'grey'}}>{createDate}</Text>
                             </Body>
                         </Left>
                     </CardItem>
                     <CardItem>
                         <Body>
-                            <Text style={{fontSize:15}}>{postDetails.post}</Text>
+                            <Text style={{fontSize:15}}>{post.post}</Text>
                         </Body>
                         
                     </CardItem>
@@ -85,12 +96,12 @@ const SinglePostScreen=({navigation,route})=>{
                             <Button transparent icon>
                                 <Ionicons name="ios-heart" size={40} color="pink" />
                             </Button>
-                            <Text>{postDetails.likecount}</Text>
+                            <Text>{post.likecount}</Text>
                         </Left>
                         
                     </CardItem>
                     </Card>
-                        <WriteComment user={auth.currentUser.name} postDetails={postDetails}/>
+                        <WriteComment user={auth.currentUser.displayName} postDetails={route.params.post}/>
                         <FlatList
                             data={postComment}
                             onRefresh={getComments}

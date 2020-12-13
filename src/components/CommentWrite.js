@@ -1,6 +1,7 @@
 import React,{useState} from 'react';
 import { View } from 'react-native';
-
+import * as firebase from "firebase";
+import "firebase/firestore";
 import { Card, Button ,Input} from 'react-native-elements';
 import AddNotification from '../functions/NotificationFunction';
 
@@ -21,14 +22,22 @@ const WriteComment=({user,postDetails})=>{
                 type="clear" 
                 disabled={comment.length==0?true:false}
                 title='Comment' 
-                titleStyle={{color:'#e61c5d'}} onPress={() =>{
+                titleStyle={{color:'#e61c5d'}} onPress={async () =>{
                     let newComment={
                         postid:postDetails.id,
                         comment:comment,
-                        receiver:postDetails.user_email,
+                        receiver:postDetails.data.user_email,
                         sender:user
                     }
-                    AddNotification(newComment)
+                    firebase
+                    .firestore()
+                    .collection("notifications")
+                    .add(newComment).then((docRef)=>{
+                        alert("Comment ID: "+ docRef.id);
+                    })
+                    .catch((error)=> {
+                        console.log(error);
+                    });
                     setComment("");
                     input.current.clear();
                 }}/>}
