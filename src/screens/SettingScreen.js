@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { AuthContext } from '../providers/AuthProvider';
 import {View, StyleSheet} from 'react-native';
@@ -9,10 +9,26 @@ import {
     Title,
     Caption,
 } from 'react-native-paper';
+import * as firebase from "firebase";
+import "firebase/firestore";
 
-import { mergeData } from "./../functions/AsyncStorageFunctions";
+const SettingScreen=({navigation,route})=>{
 
-const SettingScreen=({navigation})=>{
+    let [userDetails,setUserDetails]=useState({})
+    const getDetails= ()=>{
+         firebase
+        .firestore()
+        .collection("users")
+        .doc(route.params.user)
+        .onSnapshot((doc)=>{
+            setUserDetails(doc.data())
+        },(error)=>console.log(error))
+    }
+
+    useEffect(()=>{
+        getDetails()
+    },[]);
+
     const [Location,setLocation]=useState("")
     const [school,setSchool]=useState("");
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -45,13 +61,13 @@ const SettingScreen=({navigation})=>{
                     />
 
                     <View style={{alignItems:'center',marginTop:50,marginBottom:20,marginLeft:10}}>
-                        <Title style={styles.title}>{auth.currentUser.name}</Title>
+                        <Title style={styles.title}>{auth.currentUser.displayName}</Title>
                         <Caption style={styles.caption}>{auth.currentUser.email}</Caption>
                     </View>
                     <View style={{alignContent:'center',padding:10}}>
                          <Input
-                            placeholder={auth.currentUser.location==null||auth.currentUser.location=="" ?"Location":auth.currentUser.location}
-                            defaultValue={auth.currentUser.location}
+                            placeholder={userDetails.location==undefined||userDetails.location==""?"Location":userDetails.location}
+                            defaultValue={userDetails.location}
                             leftIcon={<Feather name="map-pin" size={24} color="#777777" />}
                             containerStyle={{backgroundColor:'white',borderRadius:10,paddingTop:10,shadowOpacity:50,marginBottom:10}}
                             onChangeText={value => setLocation(value)}
@@ -61,7 +77,7 @@ const SettingScreen=({navigation})=>{
                                 buttonStyle={{backgroundColor:'white',borderRadius:10,padding:20,shadowOpacity:50,marginBottom:10}}
                                 titleStyle={{color:'#777777',marginLeft:10}}
                                 icon={<FontAwesome name="birthday-cake" size={24} color="#777777" />}
-                                title={auth.currentUser.bday==null||auth.currentUser.bday==""||date==""?"Select Birthday Date":date}
+                                title={userDetails.bday==undefined||auth.currentUser.bday==""||date==""?"Select Birthday Date":date}
                                 onPress ={showDatePicker}
                             />
                             <DateTimePickerModal
@@ -71,7 +87,7 @@ const SettingScreen=({navigation})=>{
                                 onCancel={hideDatePicker}
                             />
                         <Input
-                            placeholder={auth.currentUser.works==null||auth.currentUser.works=="" ?"Institution":auth.currentUser.works}
+                            placeholder={userDetails.works==undefined||userDetails.works=="" ?"Institution":userDetails.works}
                             leftIcon={<FontAwesome name="institution" size={24} color="#777777" />}
                             containerStyle={{backgroundColor:'white',borderRadius:10,paddingTop:10,shadowOpacity:50,marginBottom:10}}
                             onChangeText={value => setSchool(value)}
@@ -89,13 +105,16 @@ const SettingScreen=({navigation})=>{
                                         bday:date
                                     }
                                     console.log(userInfo)
-
-                                    let update=await mergeData(auth.currentUser.email,JSON.stringify(userInfo))
-                                    if (update){
+                                    firebase
+                                    .firestore()
+                                    .collection("users")
+                                    .doc(route.params.user)
+                                    .update(userInfo).then(()=>{
                                         alert("User Details Updated")
-                                        auth.setisLogged(false);
-                                        auth.setcurrentUser({});
-                                    }
+                                        navigation.navigate('Profile',{user:route.params.user})
+                                    }).catch((error)=>{
+                                        console.log(error)
+                                    })
                                         
                                 }}/>
                     

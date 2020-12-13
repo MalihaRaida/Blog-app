@@ -1,32 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {View,StyleSheet,ImageBackground} from 'react-native';
 import { AuthContext } from '../providers/AuthProvider';
 import { Header} from 'react-native-elements';
 import { FontAwesome,Ionicons,AntDesign,Feather } from '@expo/vector-icons';
-import {clear, removeData} from './../functions/AsyncStorageFunctions';
 import { Avatar,Button } from "react-native-elements";
 import {
     Title,
     Caption,
     Text,
 } from 'react-native-paper';
-
 import * as firebase from 'firebase';
-import {getUserPost} from './../functions/PostFunction';
+import "firebase/firestore";
 
-
-const ProfileScreen =({navigation})=>{
-
-    const deleteUserProfile=async(email)=>{
-        let deleted=false;
-        let postId=await getUserPost(email)
-        for(let id of postId){
-            deleted=await removeData(id);
-        }
-        deleted=await removeData(email);
-        return deleted;
+const ProfileScreen =({route,navigation})=>{
+    let [userDetails,setUserDetails]=useState({})
+    const getDetails= ()=>{
+         firebase
+        .firestore()
+        .collection("users")
+        .doc(route.params.user)
+        .onSnapshot((doc)=>{
+            setUserDetails(doc.data())
+        },(error)=>console.log(error))
     }
+
+    useEffect(()=>{
+        getDetails()
+    },[]);
+
 
     return(
          <AuthContext.Consumer>
@@ -70,7 +72,7 @@ const ProfileScreen =({navigation})=>{
                     </ImageBackground>
                     
                     <View style={{alignItems:'center',marginTop:65,marginLeft:10}}>
-                    <Title style={styles.title}>{auth.currentUser.name}</Title>
+                    <Title style={styles.title}>{auth.currentUser.displayName}</Title>
                     <Caption style={styles.caption}>{auth.currentUser.email}</Caption>
                     </View>
                 
@@ -79,49 +81,31 @@ const ProfileScreen =({navigation})=>{
                     marginBottom:15,}}>   
                     <View style={styles.row}>
                         <Feather name="map-pin" size={24} color="#777777" />
-                        <Text style={{marginLeft:20,color:"#777777"}}>{auth.currentUser.location==null||auth.currentUser.location==""?"No value set yet":"Stays at "+auth.currentUser.location}</Text>
+                        <Text style={{marginLeft:20,color:"#777777"}}>
+                            {userDetails.location==undefined?"No value set yet":"Stays at "+userDetails.location}</Text>
                     </View>
                     <View style={styles.row}>
                     <FontAwesome name="birthday-cake" size={24} color="#777777" />
-                        <Text style={{marginLeft:20,color:"#777777"}}>{auth.currentUser.bday==null||auth.currentUser.bday==""?"No value set yet":"Born on "+auth.currentUser.bday}</Text>
+                        <Text style={{marginLeft:20,color:"#777777"}}>{userDetails.bday==undefined?"No value set yet":"Born on "+userDetails.bday}</Text>
                     </View>
                     <View style={styles.row}>
                         <FontAwesome name="institution" size={24} color="#777777" />
-                        <Text style={{marginLeft:20,color:"#777777"}}>{auth.currentUser.works==null||auth.currentUser.works==""?"No value set yet":"Works at "+auth.currentUser.works}</Text>
+                        <Text style={{marginLeft:20,color:"#777777"}}>{userDetails.works==undefined?"No value set yet":"Works at "+userDetails.works}</Text>
                     </View>
                     <View style={styles.row}>
                         <AntDesign name="idcard" size={25} color="#777777" />
-                        <Text style={{marginLeft:20,color:"#777777"}}>{auth.currentUser.id}</Text>
+                        <Text style={{marginLeft:20,color:"#777777"}}>{userDetails.sid}</Text>
                     </View>
                 </View>
-                <View style={{flexDirection:'row'}}>
+                <View style={{alignItems:'center'}}>
                     <Button
-                    icon={<Ionicons name="md-settings" size={24} color="#0388fc" />}
+                    icon={<Ionicons name="md-settings" size={24} color="#ffffff" />}
                     containerStyle={{width:150,marginLeft:20,marginRight:20}}
                     titleStyle={{marginLeft:5}}
                     title="Settings"
-                    type='outline'
+                    
                     onPress={()=>{
-                        navigation.push("Settings")
-                    }}
-                    />
-                    <Button
-                    icon={<AntDesign name="deleteuser" size={24} color="white" />}
-                    buttonStyle={{backgroundColor:'#e02f2f'}}
-                    containerStyle={{width:150,marginLeft:30,marginRight:10,}}
-                    titleStyle={{marginLeft:5}}
-                    title="Delete"
-                    type='solid'
-                    onPress={async ()=>{
-                        let deleted=await deleteUserProfile(auth.currentUser.email);
-                        if(deleted){
-                            alert("User Removed Successfully");
-                            auth.setisLogged(false);
-                            auth.setcurrentUser({});
-                        }
-                        else{
-                            alert("Delete action unsuccessful");
-                        }
+                        navigation.navigate("SettingsScreen",{user:auth.currentUser.uid})
                     }}
                     />
                 </View>
