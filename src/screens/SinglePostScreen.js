@@ -37,6 +37,7 @@ const SinglePostScreen=({navigation,route})=>{
         firebase
         .firestore()
         .collection("notifications")
+        .orderBy("createdAt","desc")
         .onSnapshot((querySnapshot)=>{
             let allComment=[]
             querySnapshot.forEach((doc)=>{

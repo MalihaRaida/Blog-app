@@ -17,6 +17,7 @@ const  NotificationScreen =({navigation})=> {
         firebase
         .firestore()
         .collection("notifications")
+        .orderBy("createdAt","desc")
         .onSnapshot((querySnapshot)=>{
             let allNotify=[]
             querySnapshot.forEach((doc)=>{

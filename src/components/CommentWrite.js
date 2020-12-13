@@ -26,6 +26,7 @@ const WriteComment=({user,post})=>{
                     let newComment={
                         postid:post.id,
                         comment:comment,
+                         createdAt: firebase.firestore.Timestamp.now(),
                         receiver:post.user_email,
                         sender:user
                     }

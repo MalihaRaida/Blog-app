@@ -49,7 +49,9 @@ const ShowPost=({content,currentuser,navigation})=>{
                         let likedjson={
                         postid:content.id,
                         receiver:content.data.user_email,
-                        sender:currentuser.displayName};
+                        createdAt: firebase.firestore.Timestamp.now(),
+                        sender:currentuser.displayName
+                      };
 
                         await firebase
                         .firestore()
