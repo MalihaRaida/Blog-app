@@ -6,7 +6,7 @@ import { Card, Button ,Input} from 'react-native-elements';
 // import AddNotification from '../functions/NotificationFunction';
 
 
-const WriteComment=({user,postDetails})=>{
+const WriteComment=({user,post})=>{
     const [comment, setComment] = useState("");
     const input = React.createRef();
     return(<Card containerStyle={{borderRadius:10,marginLeft:5,marginRight:5, shadowOffset:10}}>
@@ -24,9 +24,9 @@ const WriteComment=({user,postDetails})=>{
                 title='Comment' 
                 titleStyle={{color:'#e61c5d'}} onPress={async () =>{
                     let newComment={
-                        postid:postDetails.id,
+                        postid:post.id,
                         comment:comment,
-                        receiver:postDetails.data.user_email,
+                        receiver:post.user_email,
                         sender:user
                     }
                     firebase

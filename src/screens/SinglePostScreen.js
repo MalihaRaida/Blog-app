@@ -12,10 +12,26 @@ import * as firebase from "firebase";
 import "firebase/firestore";
 
 const SinglePostScreen=({navigation,route})=>{
-    let postData=route.params.post.data
-    let postid=route.params.post.id
+    let postid=route.params.post
+    let [postDetails,setpostDetails]=useState({});
     const [postComment,setComment]=useState([]);
     const [reload,setReload]=useState(false);
+
+    const getPost=async()=>{
+        firebase
+        .firestore()
+        .collection("posts")
+        .doc(postid)
+        .get()
+        .then((doc)=>{
+            let post=doc.data()
+            post.id=postid
+            post.createdAt=post.createdAt.toDate().toDateString()
+            console.log(post)
+            setpostDetails(post)
+        })
+        .catch((error)=>console.log(error));
+    }
 
     const getComments=async()=>{
         firebase
@@ -41,7 +57,11 @@ const SinglePostScreen=({navigation,route})=>{
         });
     }
 
+    // useEffect(()=>{
+        
+    // },[]);
     useEffect(()=>{
+        getPost();
         getComments();
     },[]);
 
@@ -78,14 +98,14 @@ const SinglePostScreen=({navigation,route})=>{
                                 overlayContainerStyle={{backgroundColor: 'grey'}}
                                 icon={{name: 'user', type: 'font-awesome'}} />
                             <Body>
-                            <Text style={{fontSize:15}}>{postData.user_name}</Text>
-                            <Text style={{color:'grey'}}>{postData.createdAt.toDate().toDateString()}</Text>
+                            <Text style={{fontSize:15}}>{postDetails.user_name}</Text>
+                            <Text style={{color:'grey'}}>{postDetails.createdAt}</Text>
                             </Body>
                         </Left>
                     </CardItem>
                     <CardItem>
                         <Body>
-                            <Text style={{fontSize:15}}>{postData.post}</Text>
+                            <Text style={{fontSize:15}}>{postDetails.post}</Text>
                         </Body>
                         
                     </CardItem>
@@ -94,12 +114,12 @@ const SinglePostScreen=({navigation,route})=>{
                             <Button transparent icon>
                                 <Ionicons name="ios-heart" size={40} color="pink" />
                             </Button>
-                            <Text>{postData.likecount}</Text>
+                            <Text>{postDetails.likecount}</Text>
                         </Left>
                         
                     </CardItem>
                     </Card>
-                        <WriteComment user={auth.currentUser.displayName} postDetails={route.params.post}/>
+                        <WriteComment user={auth.currentUser.displayName} post={postDetails}/>
                         <FlatList
                             data={postComment}
                             onRefresh={getComments}

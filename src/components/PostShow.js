@@ -64,7 +64,7 @@ const ShowPost=({content,currentuser,navigation})=>{
                     <Text>{like}</Text>
                 </Left>
                 <Right>
-                  <Button buttonStyle={{backgroundColor:'#3a0088'}} title="Comment" onPress={()=>navigation.navigate('Post',{post:content})}>
+                  <Button buttonStyle={{backgroundColor:'#3a0088'}} title="Comment" onPress={()=>navigation.navigate('Post',{post:content.id})}>
                   </Button>
                 </Right>
             </CardItem>

@@ -3,9 +3,10 @@ import {  FlatList, View } from 'react-native';
 import {Header} from 'react-native-elements';
 import {AuthContext} from '../providers/AuthProvider';
 import { Ionicons} from '@expo/vector-icons';
-import { getDataJSON } from "./../functions/AsyncStorageFunctions";
+// import { getDataJSON } from "./../functions/AsyncStorageFunctions";
 import  ShowNotification  from "./../components/NotifactionShow";
 import * as firebase from 'firebase';
+import "firebase/firestore";
 
 const  NotificationScreen =({navigation})=> {
     let [notification,setNotification]=useState([]);
@@ -13,13 +14,26 @@ const  NotificationScreen =({navigation})=> {
 
     const getNotification = async ()=>{
         setReload(true)
-        let notify=await getDataJSON('notification');
-        if(notify!=null ){
-            setNotification(notify);
-        }
-        else
-            console.log("No Notification");
-        setReload(false);
+        firebase
+        .firestore()
+        .collection("notifications")
+        .onSnapshot((querySnapshot)=>{
+            let allNotify=[]
+            querySnapshot.forEach((doc)=>{
+                allNotify.push({
+                    id:doc.id,
+                    data:doc.data(),
+                });
+            });
+            if(allNotify!=null){
+                setNotification(allNotify)
+            }
+            else console.log("no Notification")
+            setReload(false)
+        },(error)=>{
+            setReload(false);
+            console.log(error);
+        });
     }
     useEffect(()=>{
         getNotification();
@@ -56,10 +70,10 @@ const  NotificationScreen =({navigation})=> {
                         onRefresh={getNotification}
                         refreshing={reload}
                         renderItem={function ({ item }) {
-                            if(item.receiver==auth.currentUser.email)
+                            if(item.data.receiver==auth.currentUser.email)
                                 return (
                                 <ShowNotification
-                                    content={item}
+                                    content={item.data}
                                     navigation={navigation}
                                 />);
                         }}
